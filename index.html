@@ -230,8 +230,31 @@
   </script>
   
   <script>
+    const colorPalette = [
+        'rgba(255, 99, 132, 1)',  // Red
+        'rgba(54, 162, 235, 1)', // Blue
+        'rgba(255, 206, 86, 1)', // Yellow
+        'rgba(75, 192, 192, 1)', // Green
+        'rgba(153, 102, 255, 1)', // Purple
+        'rgba(255, 159, 64, 1)'  // Orange
+    ];
+
+    // Generate a random color for additional charts
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Define chartInstances as a global variable
+    const chartInstances = {}; // Store chart instances dynamically based on labels
+
     let isFetching = false; // To debounce API calls
 
+    // Fetch data and dynamically create charts
     async function fetchDataAndCreateCharts() {
         if (isFetching) return; // Prevent overlapping fetch calls
         isFetching = true;
