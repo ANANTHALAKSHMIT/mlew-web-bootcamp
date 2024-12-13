@@ -248,9 +248,8 @@
         return color;
     }
 
-    // Global variables
-    const chartInstances = {}; // Store chart instances
-    const historicalData = {}; // Store historical data for each label
+    // Global variable to store chart instances
+    const chartInstances = {};
     let isFetching = false; // Prevent overlapping fetch calls
 
     // Fetch data and dynamically create or update charts
@@ -277,20 +276,7 @@
 
             const container = document.getElementById('chartsContainer');
 
-            // Process each label's data
             Object.keys(groupedData).forEach((label, index) => {
-                // Initialize historical data if not already present
-                if (!historicalData[label]) {
-                    historicalData[label] = { timestamps: [], values: [] };
-                }
-
-                // Append new data to historical data
-                groupedData[label].timestamps.forEach((timestamp, i) => {
-                    historicalData[label].timestamps.push(timestamp);
-                    historicalData[label].values.push(groupedData[label].values[i]);
-                });
-
-                // Create chart if it doesn't exist
                 if (!chartInstances[label]) {
                     // Create a card for the chart
                     const chartCard = document.createElement('div');
@@ -307,12 +293,12 @@
                     chartInstances[label] = new Chart(ctx, {
                         type: 'line',
                         data: {
-                            labels: historicalData[label].timestamps,
+                            labels: groupedData[label].timestamps,
                             datasets: [{
                                 label: `${label}`,
                                 borderColor: color,
                                 backgroundColor: color.replace('1)', '0.2)'),
-                                data: historicalData[label].values
+                                data: groupedData[label].values
                             }]
                         },
                         options: {
@@ -325,8 +311,12 @@
                         }
                     });
                 } else {
-                    // Update existing chart with new data
+                    // Reset the existing chart data
                     const chart = chartInstances[label];
+                    chart.data.labels = []; // Clear x-axis labels
+                    chart.data.datasets[0].data = []; // Clear y-axis values
+
+                    // Add new data
                     groupedData[label].timestamps.forEach((timestamp, i) => {
                         chart.data.labels.push(timestamp);
                         chart.data.datasets[0].data.push(groupedData[label].values[i]);
