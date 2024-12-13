@@ -137,26 +137,48 @@
   <script>
     async function updateAlerts() {
       try {
-        const response = await fetch('https://mlew-api-iot.onrender.com/get-alerts'); // Fetch alerts from the API
-        const alerts = await response.json(); // Example: [{"type": "warning", "message": "High Temperature Detected!"}]
-  
-        const alertsContainer = document.querySelector('.alerts-container'); // Container for alerts
-        alertsContainer.innerHTML = ''; // Clear existing alerts
-  
-        alerts.forEach(alert => {
-          const alertDiv = document.createElement('div');
-          alertDiv.className = `alert alert-${alert.type} mb-2`; // Use dynamic Bootstrap classes (e.g., alert-warning, alert-info)
-          alertDiv.textContent = alert.message;
-          alertsContainer.appendChild(alertDiv);
-        });
+          const response = await fetch('https://mlew-api-iot.onrender.com/get-alerts'); // Fetch alerts from the API
+          const alerts = await response.json(); // Example: [{"type": "warning", "message": "High Temperature Detected!", "timestamp": "2024-12-13T08:00:00Z"}]
+
+          const alertsContainer = document.querySelector('.alerts-container'); // Container for alerts
+          alertsContainer.innerHTML = ''; // Clear existing alerts
+
+          const today = new Date(); // Get today's date
+          today.setHours(0, 0, 0, 0); // Reset time to midnight
+
+          // Filter alerts for today's date
+          const todayAlerts = alerts.filter(alert => {
+              const alertDate = new Date(alert.timestamp);
+              return alertDate >= today && alertDate <= new Date(today.getTime() + 24 * 60 * 60 * 1000); // Check if the alert is within today's date range
+          });
+
+          todayAlerts.forEach(alert => {
+              const alertDiv = document.createElement('div');
+              alertDiv.className = `alert alert-${alert.type} mb-2`; // Use dynamic Bootstrap classes (e.g., alert-warning, alert-info)
+              
+              // Format timestamp
+              const alertTime = new Date(alert.timestamp).toLocaleTimeString();
+
+              // Add message with timestamp
+              alertDiv.innerHTML = `<strong>${alert.message}</strong> <span class="text-muted">(${alertTime})</span>`;
+              alertsContainer.appendChild(alertDiv);
+          });
+
+          if (todayAlerts.length === 0) {
+              const noAlertsDiv = document.createElement('div');
+              noAlertsDiv.className = `alert alert-info`;
+              noAlertsDiv.textContent = 'No alerts for today.';
+              alertsContainer.appendChild(noAlertsDiv);
+          }
       } catch (error) {
-        console.error('Error updating alerts:', error);
+          console.error('Error updating alerts:', error);
       }
-    }
-  
-    // Periodically update alerts
-    setInterval(updateAlerts, 5000); // Fetch and update alerts every 5 seconds
-    updateAlerts(); // Initial fetch
+  }
+
+  // Periodically update alerts
+  setInterval(updateAlerts, 5000); // Fetch and update alerts every 5 seconds
+  updateAlerts(); // Initial fetch
+
   </script>
   
   <script>
