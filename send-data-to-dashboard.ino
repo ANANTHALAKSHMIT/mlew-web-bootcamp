@@ -2,10 +2,10 @@
 #include <HTTPClient.h>
 #include <DHT.h>
 
-const char* ssid = "Purna";
-const char* password = "Galla4446";
-String apiRoute="https://mlew-api-iot.onrender.com/store?label=";
-String alertRoute="https://mlew-api-iot.onrender.com/alert?type=";
+const char* ssid = Veera Lakshmi";
+const char* password = "talari12365";
+String apiRoute="https://the-achievers-api.onrender.com/store?label=";
+String alertRoute="https://the-achievers-api.onrender.com/alert?type=";
 
 bool isSent=false;
 DHT dht(23,DHT11);
