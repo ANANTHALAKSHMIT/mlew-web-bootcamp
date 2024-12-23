@@ -8,10 +8,8 @@ const char* password = "Galla4446";
 String apiRoute="https://mlew-api-iot.onrender.com/get-devices";
 
 bool isSent=false;
-Servo motor;
 
 void setup() {
-  motor.attach(5);
   Serial.begin(9600);
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
@@ -58,10 +56,30 @@ void checkDeviceState(String api) {
           // Perform action based on state
           if (state == "on") {
             Serial.println("Device 1 is ON");
-            motor.write(180);
           } else if (state == "off") {
             Serial.println("Device 1 is OFF");
-            motor.write(0);
+          }
+          break; // Exit the loop once device_id 1 is found
+        } else if (deviceId == "2") { 
+          Serial.print("Device State: ");
+          Serial.println(state);
+
+          // Perform action based on state
+          if (state == "on") {
+            Serial.println("Device 2 is ON");
+          } else if (state == "off") {
+            Serial.println("Device 2 is OFF");
+          }
+          break; // Exit the loop once device_id 1 is found
+        } else if (deviceId == "3") { 
+          Serial.print("Device State: ");
+          Serial.println(state);
+
+          // Perform action based on state
+          if (state == "on") {
+            Serial.println("Device 3 is ON");
+          } else if (state == "off") {
+            Serial.println("Device 3 is OFF");
           }
           break; // Exit the loop once device_id 1 is found
         }
